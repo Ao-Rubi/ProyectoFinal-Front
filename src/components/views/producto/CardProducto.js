@@ -1,23 +1,21 @@
 import React from "react";
-import { Card, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Card, Row, Col,Button } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import "./CardProducto.css";
-import Swal from "sweetalert2";
+import { agregarCarrito } from "../helperCarrito";
 
 const CardProducto = (props) => {
-  const agregarCarrito = (producto) => {
-    let productosPedido = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE_PRODUCTOS_PEDIDO)) || [];
-    productosPedido.push(producto);
-    localStorage.setItem(process.env.REACT_APP_LOCALSTORAGE_PRODUCTOS_PEDIDO, JSON.stringify(productosPedido));
-    Swal.fire(
-      'Producto agregado',
-      'El producto fue agregado correctamente',
-      'success'
-    );
+  const navigate = useNavigate();
+  const agregarProducto = (producto) => {
+    // console.log(producto);
+    if ( !agregarCarrito(producto)) {
+      navigate("/login");
+      // console.log('pasa')
+    }
   }
-  
+
   return (
-    <Col md={4} xl={3} className="mb-5">
+    <Col md={6} xl={3} className="mb-5">
       <Card className="h-100 cardProd">
         <Card.Img
           variant="top"
@@ -37,9 +35,9 @@ const CardProducto = (props) => {
         </Card.Body>
         <Card.Footer>
           <Row className="text-center align-items-center justify-content-around d-flex flex-wrap">
-            <Link to={`/`} className="btn btnCard btnCarrito" onClick={()=>{agregarCarrito(props.producto)}}>
+            <Button  className="btn btnCard btnCarrito" onClick={()=>{agregarProducto(props.producto)}}>
               Agregar al carrito
-            </Link>
+            </Button>
             <Link
               to={`/detalleProducto/${props.producto._id}`}
               className="btn btnCard mt-1 mt-xl-0 btnVerMas"

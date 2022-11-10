@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Badge, Button } from "react-bootstrap";
 import "./DetalleProducto.css";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { agregarCarrito } from "../helperCarrito";
 
 const DetalleProducto = () => {
-  const usuario = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE)) || null;
   const navigate = useNavigate();
   const { id } = useParams();
   const URL = process.env.REACT_APP_API_HAMBURGUESERIA;
@@ -26,16 +25,10 @@ const DetalleProducto = () => {
     }
   };
 
-  const agregarCarrito = (producto) => {
-    let productosPedido = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALSTORAGE_PRODUCTOS_PEDIDO)) || [];
-    productosPedido.push(producto);
-    localStorage.setItem(process.env.REACT_APP_LOCALSTORAGE_PRODUCTOS_PEDIDO, JSON.stringify(productosPedido));
-    Swal.fire(
-      'Producto agregado',
-      'El producto fue agregado correctamente',
-      'success'
-    );
-    navigate("/");
+  const agregarProducto = (producto) => {
+    if (!agregarCarrito(producto)) {
+      navigate('/login')
+    } 
   }
 
   return (
@@ -55,7 +48,7 @@ const DetalleProducto = () => {
             <p className="text-light tipografiaDetalle">
               {producto.detalle}
             </p>
-            <Button className='btn btn-outline-light' onClick={()=>{agregarCarrito(producto)}}>Agregar al carrito</Button>
+            <Button className='btn btn-outline-light' onClick={()=>{agregarProducto(producto)}}>Agregar al carrito</Button>
           </Col>
         </Row>
       </Card>
